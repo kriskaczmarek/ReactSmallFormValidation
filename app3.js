@@ -1,57 +1,56 @@
-class App extends React.Component {
+class ShoppingCart extends React.Component {
 	state = {
-		availableProducts: 7,
-		shoppingCart: 1,
+		onStock: 7,
+		inCart: 0,
 	}
 	handleRemoveFromCart = () => {
 		this.setState({
-			shoppingCart: this.state.shoppingCart - 1,
+			inCart: this.state.inCart - 1,
 		})
 	}
 	handleAddToCart = () => {
 		this.setState({
-			shoppingCart: this.state.shoppingCart + 1,
+			inCart: this.state.inCart + 1,
 		})
 	}
-	handleBuy = () => {
+	handleBuyItems = () => {
 		this.setState({
-			availableProducts: this.state.availableProducts - this.state.shoppingCart,
-			shoppingCart: 0,
+			onStock: this.state.onStock - this.state.inCart,
+			inCart: 0,
 		})
 	}
+	handleOnSubmit = event => {
+		event.preventDefault()
+	}
+
 	render() {
-        const {shoppingCart, availableProducts} = this.state
-        const style = shoppingCart === 0 ? { opacity: 0.3 } : {}
+		const style = this.state.onStock === 0 ? { opacity: 0.3 } : {}
+		const { inCart, onStock } = this.state
 		return (
 			<>
-				<button
-					disabled={shoppingCart ? false : true}
-					onClick={this.handleRemoveFromCart}>
-					-
-				</button>
-
-				<span
-					className='kup'
-					style={style}>
-					{shoppingCart}
-				</span>
-
-				<button
-					disabled={
-						availableProducts === shoppingCart
-							? true
-							: false
-					}
-					onClick={this.handleAddToCart}>
-					+
-				</button>
-				{shoppingCart > 0 && (
-					<button className='kup' onClick={this.handleBuy}>
-						Kup
+				<form onSubmit={this.handleOnSubmit}>
+					<button
+						onClick={this.handleRemoveFromCart}
+						disabled={inCart === 0 ? true : false}>
+						-
 					</button>
-				)}
+					<span className='kup' style={style}>
+						{" "}
+						{inCart}{" "}
+					</span>
+					<button
+						onClick={this.handleAddToCart}
+						disabled={onStock - inCart > 0 ? false : true}>
+						+
+					</button>
+					{onStock > 0 && (
+						<button className='kup' onClick={this.handleBuyItems}>
+							Kup
+						</button>
+					)}
+				</form>
 			</>
 		)
 	}
 }
-ReactDOM.render(<App />, document.getElementById("root"))
+ReactDOM.render(<ShoppingCart />, document.getElementById("root"))
